@@ -36,3 +36,5 @@ phpunit.phar
 
 # ignore generated files
 
+# ignore uploaded files
+/frontend/web/uploads
