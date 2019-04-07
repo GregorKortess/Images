@@ -8,7 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use frontend\modules\user\models\forms\PictureForm;
 use yii\web\UploadedFile;
-use frontend\components\Storage;
+use yii\web\Response;
 
 
 class ProfileController extends Controller
@@ -33,6 +33,7 @@ class ProfileController extends Controller
      */
     public function actionUploadPicture()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
         $model = new PictureForm();
         $model->picture = UploadedFile::getInstance($model, 'picture');
@@ -43,9 +44,13 @@ class ProfileController extends Controller
             $user->picture = Yii::$app->storage->saveUploadedFile($model->picture); // 15/27/30379e706840f951d22de02458a4788eb55f.jpg
 
             if ($user->save(false, ['picture'])) {
-                print_r($user->attributes);
+                return [
+                    'success' => true,
+                    'pictureUri' => Yii::$app->storage->getFile($user->picture),
+                ];
             }
         }
+        return ['success' => false, 'errors' => $model->getErrors()];
     }
 
     /**
@@ -91,6 +96,36 @@ class ProfileController extends Controller
         $currentlyUser->unFollowUser($user);
 
         return $this->redirect(['/user/profile/view','nickname' => $user->getNickName()]);
+
+    }
+
+    public function actionDeletePicture()
+
+    {
+
+        if (Yii::$app->user->isGuest) {
+
+            return $this->redirect(['/user/default/login']);
+
+        }
+
+        /* @var $currentUser User */
+
+        $currentUser = Yii::$app->user->identity;
+
+
+        if ($currentUser->deletePicture()) {
+
+            Yii::$app->session->setFlash('success', 'Picture deleted');
+
+        } else {
+
+            Yii::$app->session->setFlash('danger', 'Error occured');
+
+        }
+
+
+        return $this->redirect(['/user/profile/view', 'nickname' => $currentUser->getNickname()]);
 
     }
 

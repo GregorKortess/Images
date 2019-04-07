@@ -2,6 +2,7 @@
 
 /* @var $user frontend\models\user */
 /* @var $modelPicture frontend\modules\user\models\forms\PictureForm */
+
 /* @var $currentUser frontend\models\user */
 
 use yii\helpers\Url;
@@ -15,32 +16,38 @@ use dosamigos\fileupload\FileUpload;
 <p><?php echo HtmlPurifier::process($user->about); ?></p>
 <hr>
 
-<img src="<?php echo $user->getPicture(); ?>">
+<img src="<?php echo $user->getPicture(); ?>" id="profile-picture" />
+
+<?php if ($currentUser && $currentUser->equals($user)): ?>
+    <a href="<?php echo Url::to(['/user/profile/delete-picture']); ?>" class="btn btn-danger">Delete picture</a>
+
+<div class="alert alert-success display-none" id="profile-image-success">Profile image updated</div>
+<div class="alert alert-danger display-none " id="profile-image-fail"></div>
+
 
 <?= FileUpload::widget([
     'model' => $modelPicture,
     'attribute' => 'picture',
-    'url' => ['/user/profile/upload-picture'], // your url, this is just for demo purposes,
+    'url' => ['/user/profile/upload-picture'],
     'options' => ['accept' => 'image/*'],
-    'clientOptions' => [
-        'maxFileSize' => 2000000
-    ],
-    // Also, you can specify jQuery-File-Upload events
-    // see: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#processing-callback-options
     'clientEvents' => [
         'fileuploaddone' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
-                            }',
-        'fileuploadfail' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
-                            }',
+                if (data.result.success) {
+                    $("#profile-image-success").show();
+                    $("#profile-image-fail").hide();
+                    $("#profile-picture").attr("src", data.result.pictureUri);
+                } else {
+                    $("#profile-image-fail").html(data.result.errors.picture).show();
+                    $("#profile-image-success").hide();
+                }
+            }',
+
     ],
 ]); ?>
+<?php endif; ?>
+<hr>
 
-
-    <?php if ($currentUser && !$user->equals($currentUser)): ?>
+<?php if ($currentUser && !$user->equals($currentUser)): ?>
     <?php if (!$currentUser->isFollowing($user)): ?>
         <a href="<?php echo Url::to(['/user/profile/subscribe', 'id' => $user->getId()]); ?>" class="btn btn-info">Subscribe</a>
     <?php else: ?>

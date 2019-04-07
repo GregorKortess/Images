@@ -4,6 +4,7 @@ namespace frontend\modules\user\models\forms;
 
 use Yii;
 use yii\base\Model;
+use Intervention\Image\ImageManager;
 
 class PictureForm extends Model
 {
@@ -19,8 +20,9 @@ class PictureForm extends Model
         ];
     }
 
-    public function save()
-    {
-        return 1;
-    }
+   public function save()
+   {
+       return 1 ;
+   }
+
 }
