@@ -3,6 +3,9 @@
 namespace frontend\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Connection;
 
 /**
  * This is the model class for table "post".
@@ -13,7 +16,7 @@ use Yii;
  * @property string $description
  * @property int $created_at
  */
-class Post extends \yii\db\ActiveRecord
+class Post extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -22,7 +25,20 @@ class Post extends \yii\db\ActiveRecord
     {
         return 'post';
     }
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
 
+                ],
+                // если вместо метки времени UNIX используется datetime:
+                // 'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
 
 
     /**
@@ -47,5 +63,81 @@ class Post extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(),['id' => 'user_id']);
+    }
+
+    /**
+     * Like current post by given user
+     * @param \frontend\models\User $user
+     */
+    public function like(User $user)
+    {
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        $redis->sadd("post:{$this->getId()}:likes", $user->getId());
+        $redis->sadd("user:{$user->getId()}:likes", $this->getId());
+    }
+
+    /**
+     * Unlike current post by given user
+     * @param \frontend\models\User $user
+     */
+    public function unLike(User $user)
+    {
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        $redis->srem("post:{$this->getId()}:likes", $user->getId());
+        $redis->srem("user:{$user->getId()}:likes", $this->getId());
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function countLikes()
+    {
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        return $redis->scard("post:{$this->getId()}:likes");
+    }
+
+    /**
+     * Check whether given user liked current post
+     * @param \frontend\models\User $user
+     * @return integer
+     */
+    public function isLikedBy(User $user)
+    {
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        return $redis->sismember("post:{$this->getId()}:likes", $user->getId());
+    }
+
+    public function createComment($user, $comment)
+    {
+        $currentUserId = $user->username;
+        $params = [
+          'currentUserID' => $currentUserId,
+          'comment' => $comment,
+        ];
+
+        $params = json_encode($params);
+
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        $redis->zadd("post:{$this->getId()}:comments", time(),  $params);
+        $redis->zadd("user:{$user->getId()}:comments",  time() , $params);
+
+        return true;
+    }
+
+    public function showComments()
+    {
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        return $redis->zrange("post:{$this->getId()}:comments", 0 , -1);
     }
 }

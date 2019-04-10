@@ -40,6 +40,7 @@ class PostForm extends Model
         $this->user = $user;
     }
 
+
     public function save()
     {
         if ($this->validate()) {
