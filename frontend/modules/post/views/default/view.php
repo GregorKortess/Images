@@ -49,22 +49,26 @@ use yii\helpers\ArrayHelper;
         <form>
             <label for="comments">Оставить комментарий</label>
             <br>
-            <a href="#" class="btn btn-primary button-comment" data-id="<?php echo $post->id; ?>">Отправка
-                комментария</a>
+            <a href="#" class="btn btn-success button-comment" data-id="<?php echo $post->id; ?>">
+                Отправка комментария
+            </a>
             <br><br>
             <textarea class="form-control" name="" id="comments" rows="10"></textarea>
         </form>
     </div>
 
     <br>
+    <hr>
 
     <span class="show-comments">
         <?php foreach ($post->showComments() as $comment): ?>
+
             <?php $comment = json_decode($comment); ?>
         <?php $comments = ArrayHelper::toArray($comment); ?>
-        <b><?php echo $comments['currentUserID']; ?></b>
-            <br>
-        <?php echo $comments['comment']; ?>
+        <h3><?php echo Html::encode($comments['currentUserID']); ?></h3>
+        <?php echo Html::encode($comments['comment']); ?>
+
+            <a href="#" class="btn btn-danger button-delete" data-id="<?php echo $post->id; ?>" data-text="<?php echo $comments['comment'] ?>" data-user="<?php echo $comments['currentUserID'] ?>">Удалить</a>
             <hr>
         <?php endforeach; ?>
             </span>
@@ -78,5 +82,8 @@ $this->registerJsFile('@web/js/like.js', [
 ]);
 
 $this->registerJsFile('@web/js/comment.js', [
+    'depends' =>\yii\web\JqueryAsset::className(),
+]);
+$this->registerJsFile('@web/js/delete.js', [
     'depends' =>\yii\web\JqueryAsset::className(),
 ]);

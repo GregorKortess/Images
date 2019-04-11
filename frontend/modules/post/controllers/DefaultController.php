@@ -10,6 +10,7 @@ use yii\web\Response;
 use yii\web\UploadedFile;
 use frontend\modules\post\models\forms\PostForm;
 use frontend\models\User;
+use yii\helpers\ArrayHelper;
 
 /**
  * Default controller for the `post` module
@@ -56,6 +57,11 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * Добавление комментария
+     * @return array|Response
+     * @throws NotFoundHttpException
+     */
     public function actionComment()
     {
         if (Yii::$app->user->isGuest) {
@@ -64,7 +70,7 @@ class DefaultController extends Controller
 
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-
+        // Получаем id текущего поста и текст комментария
         $id = Yii::$app->request->post('id');
         $comment = Yii::$app->request->post('comment');
 
@@ -72,6 +78,7 @@ class DefaultController extends Controller
 
         /* @var $currentUser User */
         $currentUser = Yii::$app->user->identity;
+
 
         if($post->createComment($currentUser, $comment)){
             Yii::$app->session->setFlash('success','Комментарий добавлен');
@@ -82,6 +89,41 @@ class DefaultController extends Controller
         return [
             'access' => true,
         ];
+    }
+
+    /**
+     * @return Response
+     */
+    public function actionDeletecomment()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['/user/default/login']);
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        $post = $this->findPost($id);
+
+        $commentText = Yii::$app->request->post('commentText');
+        $commentAuthor = Yii::$app->request->post('commentAuthor');
+
+        $currentUser = Yii::$app->user->identity;
+
+        if($currentUser->username == $commentAuthor){
+            $post->deleteComment($currentUser, $commentText, $commentAuthor);
+            Yii::$app->session->setFlash('success','Комментарий удалён');
+            $this->redirect(['/post/'.$id]);
+        } else {
+            Yii::$app->session->setFlash('danger','Вы не являетесь автором этого комментария');
+            $this->redirect(['/post/'.$id]);
+        }
+
+
+//        return [
+//            'access' => true,
+//        ];
+
     }
 
 

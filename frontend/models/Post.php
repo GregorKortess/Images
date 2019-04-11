@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\bootstrap\Html;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
 
@@ -139,5 +140,23 @@ class Post extends ActiveRecord
         /* @var $redis Connection */
         $redis = Yii::$app->redis;
         return $redis->zrange("post:{$this->getId()}:comments", 0 , -1);
+    }
+
+    public function deleteComment($user,$commentText,$commentAuthor)
+    {
+
+        $params = [
+            'currentUserID' => $commentAuthor,
+            'comment' => $commentText,
+        ];
+
+        $params = json_encode($params);
+
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        $redis->zrem("post:{$this->getId()}:comments", $params);
+        $redis->zrem("user:{$user->getId()}:comments",  $params);
+
+        return true;
     }
 }
