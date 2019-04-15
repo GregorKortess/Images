@@ -1,30 +1,62 @@
 <?php
-
-use yii\helpers\Url;
-
 /* @var $this yii\web\View */
-/* @var $users[] frontend/models/User */
+/* @var $currentUser frontend\models\User */
+/* @var $feedItems[] frontend\models\Feed */
+
+use yii\web\JqueryAsset;
+use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 
 $this->title = 'My Yii Application';
 ?>
-<div class="site-index">
+    <div class="site-index">
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
+        <?php if ($feedItems): ?>
+            <?php foreach ($feedItems as $feedItem): ?>
+                <?php /* @var $feedItem Feed */ ?>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+                <div class="col-md-12">
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+                    <div class="col-md-12">
+                        <img src="<?php echo $feedItem->author_picture; ?>" width="30" height="30" />
+                        <a href="<?php echo Url::to(['/user/profile/view', 'nickname' => ($feedItem->author_nickname) ? $feedItem->author_nickname : $feedItem->author_id]); ?>">
+                            <?php echo Html::encode($feedItem->author_name); ?>
+                        </a>
+                    </div>
+
+                    <img src="<?php echo Yii::$app->storage->getFile($feedItem->post_filename); ?>" />
+                    <div class="col-md-12">
+                        <?php echo HtmlPurifier::process($feedItem->post_description); ?>
+                    </div>
+
+                    <div class="col-md-12">
+                        <?php echo Yii::$app->formatter->asDatetime($feedItem->post_created_at); ?>
+                    </div>
+
+                    <div class="col-md-12">
+                        Likes: <span class="likes-count"><?php echo $feedItem->countLikes(); ?></span>
+
+                        <a href="#" class="btn btn-primary button-unlike <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "" : "display-none"; ?>" data-id="<?php echo $feedItem->post_id; ?>">
+                            Unlike&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-down"></span>
+                        </a>
+                        <a href="#" class="btn btn-primary button-like <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "display-none" : ""; ?>" data-id="<?php echo $feedItem->post_id; ?>">
+                            Like&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="col-md-12"><hr/></div>
+            <?php endforeach; ?>
+
+        <?php else: ?>
+            <div class="col-md-12">
+                Nobody posted yet!
+            </div>
+        <?php endif; ?>
+
     </div>
 
-    <div class="body-content">
-
-        <?php foreach ($users as $user): ?>
-            <a href="<?php echo Url::to( ['/user/profile/view', 'nickname' => $user->getNickName()] ); ?>">
-                <?php echo $user->username; ?>
-            </a>
-            <hr>
-        <?php endforeach; ?>
-
-    </div>
-</div>
+<?php $this->registerJsFile('@web/js/like.js', [
+    'depends' => JqueryAsset::className(),
+]);

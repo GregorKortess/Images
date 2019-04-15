@@ -15,14 +15,13 @@ class PictureForm extends Model
         return [
             [['picture'], 'file',
                 'extensions' => ['jpg'],
-                'checkExtensionByMimeType' => true
+                'checkExtensionByMimeType' => true,
             ],
         ];
     }
 
-   public function save()
-   {
-       return 1 ;
-   }
-
+    public function save()
+    {
+        return 1;
+    }
 }
