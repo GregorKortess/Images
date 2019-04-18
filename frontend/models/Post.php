@@ -131,6 +131,7 @@ class Post extends ActiveRecord
         $redis = Yii::$app->redis;
         $redis->zadd("post:{$this->getId()}:comments", time(),  $params);
         $redis->zadd("user:{$user->getId()}:comments",  time() , $params);
+        $redis->incr("post:{$this->getId()}:commentsCount");
 
         return true;
     }
@@ -156,6 +157,7 @@ class Post extends ActiveRecord
         $redis = Yii::$app->redis;
         $redis->zrem("post:{$this->getId()}:comments", $params);
         $redis->zrem("user:{$user->getId()}:comments",  $params);
+        $redis->decr("post:{$this->getId()}:commentsCount");
 
         return true;
     }

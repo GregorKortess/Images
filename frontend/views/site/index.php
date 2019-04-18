@@ -24,8 +24,8 @@ $this->title = 'My Yii Application';
                             <?php echo Html::encode($feedItem->author_name); ?>
                         </a>
                     </div>
-
-                    <img src="<?php echo Yii::$app->storage->getFile($feedItem->post_filename); ?>" />
+                    <br><br>
+                    <a href="<?php echo Url::to(['/post/'.$feedItem->post_id]) ?>"><img src="<?php echo Yii::$app->storage->getFile($feedItem->post_filename); ?>" /></a>
                     <div class="col-md-12">
                         <?php echo HtmlPurifier::process($feedItem->post_description); ?>
                     </div>
@@ -37,16 +37,29 @@ $this->title = 'My Yii Application';
                     <div class="col-md-12">
                         Likes: <span class="likes-count"><?php echo $feedItem->countLikes(); ?></span>
 
-                        <a href="#" class="btn btn-primary button-unlike <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "" : "display-none"; ?>" data-id="<?php echo $feedItem->post_id; ?>">
+                        <a href="#"
+                           class="btn btn-primary button-unlike <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "" : "display-none"; ?>"
+                           data-id="<?php echo $feedItem->post_id; ?>">
                             Unlike&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-down"></span>
                         </a>
-                        <a href="#" class="btn btn-primary button-like <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "display-none" : ""; ?>" data-id="<?php echo $feedItem->post_id; ?>">
+                        <a href="#"
+                           class="btn btn-primary button-like <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "display-none" : ""; ?>"
+                           data-id="<?php echo $feedItem->post_id; ?>">
                             Like&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
                         </a>
+                        <br>
+                        Comments: <span class="likes-count"><?php if (!$feedItem->countComments()) {
+                                echo 0;
+                            } else
+                                echo $feedItem->countComments();
+                        ?>
+                        </span>
                     </div>
 
                 </div>
-                <div class="col-md-12"><hr/></div>
+                <div class="col-md-12">
+                    <hr/>
+                </div>
             <?php endforeach; ?>
 
         <?php else: ?>

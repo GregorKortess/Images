@@ -42,6 +42,7 @@ class SiteController extends Controller
         $limit = Yii::$app->params['feedPostLimit'];
         $feedItems = $currentUser->getFeed($limit);
 
+
         $users= User::find()->all();
         return $this->render('index', [
             'feedItems' => $feedItems,

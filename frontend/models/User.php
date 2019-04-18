@@ -313,6 +313,12 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Feed::className(),['user_id' => 'id'])->orderBy($order)->limit($limit)->all();
     }
 
+    public function getUserFeed($limit)
+    {
+        $db = "SELECT  * FROM post";
+        return Yii::$app->db->createCommand($db)->queryAll();
+    }
+
     public function likesPost(int $postId)
     {
         $redis = Yii::$app->redis;

@@ -4,11 +4,16 @@
 /* @var $modelPicture frontend\modules\user\models\forms\PictureForm */
 
 /* @var $currentUser frontend\models\user */
+/* @var $profileFeed  frontend\models\user */
+
 
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 use dosamigos\fileupload\FileUpload;
+use yii\web\JqueryAsset;
+
+
 
 ?>
 
@@ -140,6 +145,27 @@ use dosamigos\fileupload\FileUpload;
             </div>
 
         </div>
-
     </div>
 </div>
+
+    <br>
+    <hr>
+            <h3>Посты пользователя</h3>
+
+
+
+    <div class="site-index">
+
+
+            <?php foreach ($profileFeed as $feedItem): ?>
+                <?php /* @var $feedItem Feed */ ?>
+
+                <img src="<?php echo Yii::$app->storage->getFile($feedItem->filename); ?>" />
+
+
+            <?php endforeach; ?>
+
+
+
+
+

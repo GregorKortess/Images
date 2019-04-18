@@ -20,10 +20,15 @@ class ProfileController extends Controller
 
         $modelPicture = new PictureForm();
 
+        $limit = Yii::$app->params['feedPostLimit'];
+        $profileFeed = $currentUser->getUserFeed($limit);
+
+
         return $this->render('view', [
             'user' => $this->findUser($nickname),
             'currentUser' => $currentUser,
             'modelPicture' => $modelPicture,
+            'profileFeed' => $profileFeed,
         ]);
     }
 
