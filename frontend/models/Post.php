@@ -161,4 +161,10 @@ class Post extends ActiveRecord
 
         return true;
     }
+
+    public function countComments()
+    {
+        $redis = Yii::$app->redis;
+        return $redis->get("post:{$this->getId()}:commentsCount");
+    }
 }

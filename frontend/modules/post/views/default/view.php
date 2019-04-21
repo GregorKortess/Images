@@ -3,77 +3,125 @@
 /* @var $post frontend\models\Post */
 
 use yii\helpers\Html;
-
+use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 ?>
+    <div class="container full">
 
+        <div class="page-posts no-padding">
+            <div class="row">
+                <div class="page page-post col-sm-12 col-xs-12 post-82">
+
+
+                    <div class="blog-posts blog-posts-large">
+
+                        <div class="row">
+
+                            <!-- feed item -->
+                            <article class="post col-sm-12 col-xs-12">
+                                <div class="post-meta">
+                                    <div class="post-title">
+                                        <img src="<?php echo "/uploads/".$post->user->picture; ?>" class="author-image" />
+                                        <div class="author-name"><a href="<?php echo "/profile/".$post->user->id; ?>"> <?php echo $post->user->username; ?></a></div>
+                                    </div>
+                                </div>
+                                <div class="post-type-image">
+                                    <a href="#">
+                                        <img src="<?php echo $post->getImage(); ?>" alt="">
+                                    </a>
+                                </div>
+                                <div class="post-description">
+                                    <p> <?php echo Html::encode($post->description); ?></p>
+                                </div>
+                                <div class="post-bottom">
+                                    <div class="post-likes">
+                                       <i class="fa fa-lg fa-heart-o"></i>
+                                        <span class="likes-count"><?php echo $post->countLikes(); ?></span>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href="#" class="btn btn-default button-unlike <?php echo ($currentUser && $post->isLikedBy($currentUser)) ? "" : "display-none"; ?>" data-id="<?php echo $post->id; ?>">
+                                            Unlike&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-down"></span>
+                                        </a>
+                                        <a href="#" class="btn btn-default button-like <?php echo ($currentUser && $post->isLikedBy($currentUser)) ? "display-none" : ""; ?>" data-id="<?php echo $post->id; ?>">
+                                            Like&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
+                                        </a>
+                                    </div>
+                                    <div class="post-comments">
+                                        <a href="#bot"><?php if (!$post->countComments()) { echo 0; } else echo $post->countComments(); ?> comments</a>
+
+                                    </div>
+                                    <div class="post-date">
+                                        <span><?php echo date("d-m-Y",$post->created_at); ?></span>
+                                    </div>
+                                    <div class="post-report">
+                                        <a href="#">Report post</a>
+                                    </div>
+                                </div>
+                            </article>
+                            <!-- feed item -->
+
+
+                            <div class="col-sm-12 col-xs-12" >
+                                <h4 align="center"><?php if (!$post->countComments()) { echo 0; } else echo $post->countComments(); ?> comments</h4>
+                                <div class="comments-post">
+
+                                    <div class="single-item-title"></div>
+                                    <div class="row">
+                                        <ul class="comment-list">
+
+                                            <!-- comment item -->
+                                            <li class="comment">
+                                                <div class="comment-info">
+                                                    <?php foreach ($post->showComments() as $comment): ?>
+
+                                                        <?php $comment = json_decode($comment); ?>
+                                                        <?php $comments = ArrayHelper::toArray($comment); ?>
+
+                                                        <h4 class="author"><a
+                                                                    href="#"><?php echo Html::encode($comments['currentUserID']); ?></a>
+                                                        </h4>
+                                                        <?php echo Html::encode($comments['comment']); ?>
+                                                    &nbsp;&nbsp;&nbsp;
+                                                        <a href="#" class="btn btn-default button-delete"
+                                                           data-id="<?php echo $post->id; ?>"
+                                                           data-text="<?php echo $comments['comment'] ?>"
+                                                           data-user="<?php echo $comments['currentUserID'] ?>">Удалить
+                                                        </a>
+                                                        <hr>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </li>
+                                            <!-- comment item -->
+
+
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                <!-- comments-post -->
+                            </div>
+
+                            <div class="col-sm-12 col-xs-12">
+                                <div class="comment-respond">
+                                    <h4>Оставить комментарий</h4>
+                                    <form action="#" method="post">
+                                        <p class="comment-form-comment">
+                                            <textarea class="form-control" name="comment" id="comments" rows="6" placeholder="Text" aria-required="true"></textarea>
+                                        </p>
+                                        <p class="form-submit">
+                                            <a href="#" class="btn btn-default button-comment" data-id="<?php echo $post->id; ?>">Отрпавить</a>
+                                        </p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <div class="post-default-index">
 
-    <div class="row">
-
-        <div class="col-md-12">
-            <?php if ($post->user): ?>
-                <b><?php echo $post->user->username; ?></b>
-            <?php endif; ?>
-        </div>
-        <br>
-        <hr/>
-
-        <div class="col-md-12">
-            <img src="<?php echo $post->getImage(); ?>">
-        </div>
-
-        <div class="col-md-12">
-            <hr/>
-            <?php echo Html::encode($post->description); ?>
-        </div>
-
-    </div>
-
-    <hr/>
-    <div class="col-md-12">
-        Likes: <span class="likes-count"><?php echo $post->countLikes(); ?></span>
-
-        <a href="#" class="btn btn-primary button-unlike <?php echo ($currentUser && $post->isLikedBy($currentUser)) ? "" : "display-none"; ?>" data-id="<?php echo $post->id; ?>">
-            Unlike&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-down"></span>
-        </a>
-        <a href="#" class="btn btn-primary button-like <?php echo ($currentUser && $post->isLikedBy($currentUser)) ? "display-none" : ""; ?>" data-id="<?php echo $post->id; ?>">
-            Like&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
-        </a>
-    </div>
-
-</div>
-    <br>
-    <hr>
-    <div class="col-md-12">
-        <form>
-            <label for="comments">Оставить комментарий</label>
-            <br>
-            <a href="#" class="btn btn-success button-comment" data-id="<?php echo $post->id; ?>">
-                Отправка комментария
-            </a>
-            <br><br>
-            <textarea class="form-control" name="" id="comments" rows="10"></textarea>
-        </form>
-    </div>
-
-    <br>
-    <hr>
-
-    <span class="show-comments">
-        <?php foreach ($post->showComments() as $comment): ?>
-
-            <?php $comment = json_decode($comment); ?>
-        <?php $comments = ArrayHelper::toArray($comment); ?>
-        <h3><?php echo Html::encode($comments['currentUserID']); ?></h3>
-        <?php echo Html::encode($comments['comment']); ?>
-
-            <a href="#" class="btn btn-danger button-delete" data-id="<?php echo $post->id; ?>" data-text="<?php echo $comments['comment'] ?>" data-user="<?php echo $comments['currentUserID'] ?>">Удалить</a>
-            <hr>
-        <?php endforeach; ?>
-            </span>
-
-
+    <a name="bot"></a>
 
 <?php
 
