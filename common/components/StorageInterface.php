@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\components;
+namespace common\components;
 
 use phpDocumentor\Reflection\File;
 use yii\web\UploadedFile;

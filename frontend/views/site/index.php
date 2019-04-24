@@ -66,14 +66,24 @@ $this->title = 'Newsfeed';
                                                 </a>
                                             </div>
                                             <div class="post-comments">
-                                                <?php if (!$feedItem->countComments()) { echo 0; } else echo $feedItem->countComments(); ?> comments
+                                                <?php if (!$feedItem->countComments()) {
+                                                    echo 0;
+                                                } else echo $feedItem->countComments(); ?> comments
 
                                             </div>
                                             <div class="post-date">
                                                 <span><?php echo Yii::$app->formatter->asDatetime($feedItem->post_created_at); ?></span>
                                             </div>
                                             <div class="post-report">
-                                                <a href="#">Report post</a>
+                                                <?php if (!$feedItem->isReported($currentUser)): ?>
+                                                    <a href="#" class="btn btn-default button-complain"
+                                                       data-id="<?php echo $feedItem->post_id ?>">
+                                                        Report post <i class="fa fa-cog fa-spin fa-fw icon-preloader"
+                                                                       style="display:none"></i>
+                                                    </a>
+                                                <?php else: ?>
+                                                <p>Post has been reported</p>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </article>
@@ -97,5 +107,9 @@ $this->title = 'Newsfeed';
 
 
 <?php $this->registerJsFile('@web/js/like.js', [
+    'depends' => JqueryAsset::className(),
+]); ?>
+
+<?php $this->registerJsFile('@web/js/complaints.js', [
     'depends' => JqueryAsset::className(),
 ]);

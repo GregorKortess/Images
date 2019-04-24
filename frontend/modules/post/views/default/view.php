@@ -52,9 +52,9 @@ use yii\helpers\ArrayHelper;
                                     <div class="post-date">
                                         <span><?php echo date("d-m-Y",$post->created_at); ?></span>
                                     </div>
-                                    <div class="post-report">
-                                        <a href="#">Report post</a>
-                                    </div>
+<!--                                    <div class="post-report">-->
+<!--                                        <a href="#">Report post</a>-->
+<!--                                    </div>-->
                                 </div>
                             </article>
                             <!-- feed item -->

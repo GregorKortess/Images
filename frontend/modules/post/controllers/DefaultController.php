@@ -4,6 +4,7 @@ namespace frontend\modules\post\controllers;
 
 use frontend\models\Post;
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -47,7 +48,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Ренедрит
+     * Рендер страницы
      * @param $id
      * @return string
      */
@@ -97,6 +98,7 @@ class DefaultController extends Controller
 
     /**
      * @return Response
+     * @throws NotFoundHttpException
      */
     public function actionDeletecomment()
     {
@@ -172,6 +174,32 @@ class DefaultController extends Controller
         return [
             'success' => true,
             'likesCount' => $post->countLikes(),
+        ];
+    }
+
+    public function actionComplain()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['/user/default/login']);
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+
+        /* @var $currentUser User */
+        $currentUser = Yii::$app->user->identity;
+        $post = $this->findPost($id);
+
+        if ($post->complain($currentUser)) {
+            return [
+                'success' => true,
+                'text' => 'Post reported',
+            ];
+        }
+        return [
+            'success' => false,
+            'text' => "Error",
         ];
     }
 

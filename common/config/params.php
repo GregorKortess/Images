@@ -1,6 +1,6 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
-    'supportEmail' => 'cortessbot@gmail.com',
     'user.passwordResetTokenExpire' => 3600,
+    'storagePath' => '@frontend/web/uploads/',
+    'storageUri' => 'http://images.ru/uploads/'
 ];

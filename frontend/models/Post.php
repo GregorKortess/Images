@@ -16,6 +16,8 @@ use yii\db\Connection;
  * @property string $filename
  * @property string $description
  * @property int $created_at
+ * @property int $complaints
+
  */
 class Post extends ActiveRecord
 {
@@ -166,5 +168,22 @@ class Post extends ActiveRecord
     {
         $redis = Yii::$app->redis;
         return $redis->get("post:{$this->getId()}:commentsCount");
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function complain(User $user)
+    {
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        $key = "post:{$this->getId()}:complaints";
+
+        if (!$redis->sismember($key, $user->getId())) {
+            $redis->sadd($key, $user->getId());
+            $this->complaints++;
+            return $this->save(false , ['complaints']);
+        }
     }
 }
