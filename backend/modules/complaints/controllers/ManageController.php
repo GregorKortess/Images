@@ -67,7 +67,7 @@ class ManageController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($id)->deletePost();
 
         return $this->redirect(['index']);
     }
@@ -96,4 +96,5 @@ class ManageController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }
