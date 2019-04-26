@@ -56,19 +56,19 @@ $this->title = 'Newsfeed';
                                                 <a href="#"
                                                    class="btn btn-default button-unlike <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "" : "display-none"; ?>"
                                                    data-id="<?php echo $feedItem->post_id; ?>">
-                                                    Unlike&nbsp;&nbsp;<span
+                                                    <?php echo Yii::t('feed','Unlike') ?>&nbsp;&nbsp;<span
                                                             class="glyphicon glyphicon-thumbs-down"></span>
                                                 </a>
                                                 <a href="#"
                                                    class="btn btn-default button-like <?php echo ($currentUser->likesPost($feedItem->post_id)) ? "display-none" : ""; ?>"
                                                    data-id="<?php echo $feedItem->post_id; ?>">
-                                                    Like&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
+                                                    <?php echo Yii::t('feed','Like') ?>&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
                                                 </a>
                                             </div>
                                             <div class="post-comments">
                                                 <?php if (!$feedItem->countComments()) {
-                                                    echo 0;
-                                                } else echo $feedItem->countComments(); ?> comments
+                                                    echo Yii::t('feed','Comments'),': ', 0;
+                                                } else  echo Yii::t('feed','Comments'),': ', $feedItem->countComments(); ?>
 
                                             </div>
                                             <div class="post-date">
@@ -78,11 +78,11 @@ $this->title = 'Newsfeed';
                                                 <?php if (!$feedItem->isReported($currentUser)): ?>
                                                     <a href="#" class="btn btn-default button-complain"
                                                        data-id="<?php echo $feedItem->post_id ?>">
-                                                        Report post <i class="fa fa-cog fa-spin fa-fw icon-preloader"
+                                                        <?php echo Yii::t('feed','Report post') ?> <i class="fa fa-cog fa-spin fa-fw icon-preloader"
                                                                        style="display:none"></i>
                                                     </a>
                                                 <?php else: ?>
-                                                <p>Post has been reported</p>
+                                                    <p><?php echo Yii::t('feed','Post has been reported') ?></p>
                                                 <?php endif; ?>
                                             </div>
                                         </div>

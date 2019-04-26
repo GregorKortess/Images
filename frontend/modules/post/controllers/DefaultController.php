@@ -194,7 +194,7 @@ class DefaultController extends Controller
         if ($post->complain($currentUser)) {
             return [
                 'success' => true,
-                'text' => 'Post reported',
+                'text' => Yii::t('feed','Post reported'),
             ];
         }
         return [
@@ -202,6 +202,7 @@ class DefaultController extends Controller
             'text' => "Error",
         ];
     }
+
 
     /**
      * @param $id

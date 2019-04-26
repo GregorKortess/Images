@@ -34,7 +34,7 @@ $this->title = HtmlPurifier::process($user->username);
 
                             <?php if ($currentUser && $currentUser->equals($user)): ?>
                                 <a href="<?php echo Url::to(['/user/profile/delete-picture']); ?>"
-                                   class="btn btn-danger">Delete picture</a>
+                                   class="btn btn-danger"><?php echo Yii::t('profile','Delete picture') ?></a>
 
                                 <?= FileUpload::widget([
                                     'model' => $modelPicture,
@@ -55,7 +55,7 @@ $this->title = HtmlPurifier::process($user->username);
 
                                     ],
                                 ]); ?>
-                                <a href="#" class="btn btn-default">Edit profile</a>
+                                <a href="#" class="btn btn-default"><?php echo Yii::t('profile','Edit profile') ?></a>
 
                             <?php endif; ?>
 
@@ -64,8 +64,7 @@ $this->title = HtmlPurifier::process($user->username);
 
                             <br><br>
 
-                            <div class="alert alert-success display-none" id="profile-image-success">Profile image
-                                updated
+                            <div class="alert alert-success display-none" id="profile-image-success"><?php echo Yii::t('profile','Profile image updated') ?>
                             </div>
                             <div class="alert alert-danger display-none " id="profile-image-fail"></div>
 
@@ -74,16 +73,16 @@ $this->title = HtmlPurifier::process($user->username);
                         <?php if ($currentUser && !$user->equals($currentUser)): ?>
                             <?php if (!$currentUser->isFollowing($user)): ?>
                                 <a href="<?php echo Url::to(['/user/profile/subscribe', 'id' => $user->getId()]); ?>"
-                                   class="btn btn-info">Subscribe</a>
+                                   class="btn btn-info"><?php echo Yii::t('profile','Subscribe') ?></a>
                             <?php else: ?>
                                 <a href="<?php echo Url::to(['/user/profile/unsubscribe', 'id' => $user->getId()]); ?>"
-                                   class="btn btn-info">Unsubscribe</a>
+                                   class="btn btn-info"><?php echo Yii::t('profile','Unsubscribe') ?></a>
                             <?php endif; ?>
 
 
                             <?php if ($mutualSubscriptions = $currentUser->getMutualSubscriptionsTo($user)): ?>
                                 <hr>
-                                <h5>Friends, who are also following <?php echo Html::encode($user->username); ?>: </h5>
+                                <h5><?php echo Yii::t('profile','Friends, who are also following ') ?> <?php echo Html::encode($user->username); ?>: </h5>
                                 <div class="row">
                                     <?php foreach ($mutualSubscriptions as $item): ?>
                                         <div class="col-md-12">
@@ -105,15 +104,15 @@ $this->title = HtmlPurifier::process($user->username);
                         <?php endif ?>
                         <div class="profile-bottom">
                             <div class="profile-post-count">
-                                <span><?php echo $user->getPostCount(); ?> posts</span>
+                                <span><?php echo $user->getPostCount(); ?> <?php echo Yii::t('profile','Posts') ?></span>
                             </div>
                             <div class="profile-followers">
                                 <a href="#" data-toggle="modal"
-                                   data-target="#myModal2"><?php echo $user->countFollowers() ?> followers</a>
+                                   data-target="#myModal2"><?php echo $user->countFollowers() ?> <?php echo Yii::t('profile','Followers') ?></a>
                             </div>
                             <div class="profile-following">
                                 <a href="#" data-toggle="modal"
-                                   data-target="#myModal1"><?php echo $user->countSubscriptions() ?> following</a>
+                                   data-target="#myModal1"><?php echo $user->countSubscriptions() ?> <?php echo Yii::t('profile','Following') ?></a>
                             </div>
                         </div>
 

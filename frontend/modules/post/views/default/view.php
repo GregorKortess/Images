@@ -39,14 +39,14 @@ use yii\helpers\ArrayHelper;
                                         <span class="likes-count"><?php echo $post->countLikes(); ?></span>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <a href="#" class="btn btn-default button-unlike <?php echo ($currentUser && $post->isLikedBy($currentUser)) ? "" : "display-none"; ?>" data-id="<?php echo $post->id; ?>">
-                                            Unlike&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-down"></span>
+                                            <?php echo Yii::t('post','Unlike') ?>&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-down"></span>
                                         </a>
                                         <a href="#" class="btn btn-default button-like <?php echo ($currentUser && $post->isLikedBy($currentUser)) ? "display-none" : ""; ?>" data-id="<?php echo $post->id; ?>">
-                                            Like&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
+                                            <?php echo Yii::t('post','Like') ?>&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up"></span>
                                         </a>
                                     </div>
                                     <div class="post-comments">
-                                        <a href="#bot"><?php if (!$post->countComments()) { echo 0; } else echo $post->countComments(); ?> comments</a>
+                                        <a href="#bot"><?php echo Yii::t('post','Comments'). ': ' ?><?php if (!$post->countComments()) { echo 0; } else echo $post->countComments(); ?> </a>
 
                                     </div>
                                     <div class="post-date">
@@ -61,7 +61,7 @@ use yii\helpers\ArrayHelper;
 
 
                             <div class="col-sm-12 col-xs-12" >
-                                <h4 align="center"><?php if (!$post->countComments()) { echo 0; } else echo $post->countComments(); ?> comments</h4>
+                                <h4 align="center"><?php echo Yii::t('post','Comments').': ' ?>  <?php if (!$post->countComments()) { echo 0; } else echo $post->countComments(); ?></h4>
                                 <div class="comments-post">
 
                                     <div class="single-item-title"></div>
@@ -80,11 +80,11 @@ use yii\helpers\ArrayHelper;
                                                                     href="#"><?php echo Html::encode($comments['currentUserID']); ?></a>
                                                         </h4>
                                                         <?php echo Html::encode($comments['comment']); ?>
-                                                    &nbsp;&nbsp;&nbsp;
+                                                        &nbsp;&nbsp;&nbsp;
                                                         <a href="#" class="btn btn-default button-delete"
                                                            data-id="<?php echo $post->id; ?>"
                                                            data-text="<?php echo $comments['comment'] ?>"
-                                                           data-user="<?php echo $comments['currentUserID'] ?>">Удалить
+                                                           data-user="<?php echo $comments['currentUserID'] ?>"><?php echo Yii::t('post', 'Delete') ?>
                                                         </a>
                                                         <hr>
                                                     <?php endforeach; ?>
@@ -102,13 +102,13 @@ use yii\helpers\ArrayHelper;
 
                             <div class="col-sm-12 col-xs-12">
                                 <div class="comment-respond">
-                                    <h4>Оставить комментарий</h4>
+                                    <h4><?php echo Yii::t('post','Reply') ?></h4>
                                     <form action="#" method="post">
                                         <p class="comment-form-comment">
-                                            <textarea class="form-control" name="comment" id="comments" rows="6" placeholder="Text" aria-required="true"></textarea>
+                                            <textarea class="form-control" name="comment" id="comments" rows="6" placeholder="<?php echo Yii::t('post','Text') ?>" aria-required="true"></textarea>
                                         </p>
                                         <p class="form-submit">
-                                            <a href="#" class="btn btn-default button-comment" data-id="<?php echo $post->id; ?>">Отрпавить</a>
+                                            <a href="#" class="btn btn-default button-comment" data-id="<?php echo $post->id; ?>"><?php echo Yii::t('post','Post') ?></a>
                                         </p>
                                     </form>
                                 </div>

@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 <div class="post-default-index">
 
-    <h1>Create post</h1>
+    <h1><?php echo Yii::t('create','Create post') ?></h1>
 
     <? $form = ActiveForm::begin(); ?>
 
@@ -17,7 +17,7 @@ use yii\helpers\Html;
 
     <?php echo $form->field($model,'description'); ?>
 
-    <?php echo Html::submitButton('create',['class' => 'btn btn-primary']); ?>
+    <?php echo Html::submitButton(Yii::t('create','Create'),['class' => 'btn btn-primary']); ?>
 
     <?php ActiveForm::end(); ?>
 
