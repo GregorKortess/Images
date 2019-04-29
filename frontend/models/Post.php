@@ -186,4 +186,29 @@ class Post extends ActiveRecord
             return $this->save(false , ['complaints']);
         }
     }
+
+    /**
+     * @return \yii\db\DataReader
+     * @throws \yii\db\Exception
+     */
+    public function deletePost()
+    {
+        /*  @var $redis Connection */
+        $redis = Yii::$app->redis;
+        $key1 = "post:{$this->id}:complaints";
+        $key2 = "post:{$this->id}:likes";
+        $key3 = "post:{$this->id}:comments";
+        $key4 = "post:{$this->id}:commentsCount";
+        $redis->del($key1,$key2,$key3,$key4);
+
+        $sql = "DELETE FROM post where id =". $this->id."; DELETE from feed where post_id =".$this->id;
+        return Yii::$app->db->createCommand($sql)->query();
+    }
+
+    public function isReported(User $user)
+    {
+        /* @var $redis Connection */
+        $redis = Yii::$app->redis;
+        return $redis->sismember("post:{$this->id}:complaints", $user->getId());
+    }
 }

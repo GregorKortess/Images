@@ -47,6 +47,33 @@ class DefaultController extends Controller
         ]);
     }
 
+    public function actionDeletepost()
+    {
+
+
+        if (Yii::$app->user->isGuest ) {
+            return $this->redirect(['/user/default/login']);
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        // Получаем id текущего поста и текст комментария
+        $id = Yii::$app->request->post('id');
+
+        $post = $this->findPost($id);
+        $post->deletePost();
+
+        /* @var $currentUser User */
+        $currentUser = Yii::$app->user->identity;
+
+
+        if ($post->deletePost()) {
+            Yii::$app->session->setFlash('success','Post deleted');
+            return $this->redirect(['/profile/' . $currentUser->getId()]);
+        };
+
+    }
+
     /**
      * Рендер страницы
      * @param $id
@@ -56,7 +83,7 @@ class DefaultController extends Controller
     {
         $currentUser = Yii::$app->user->identity;
 
-        return $this->render('view',[
+        return $this->render('view', [
            'post' => $this->findPost($id),
             'currentUser' => $currentUser,
         ]);
@@ -83,6 +110,7 @@ class DefaultController extends Controller
 
         /* @var $currentUser User */
         $currentUser = Yii::$app->user->identity;
+
 
 
         if($post->createComment($currentUser, $comment)){

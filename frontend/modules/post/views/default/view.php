@@ -5,6 +5,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+$currentUser = Yii::$app->user->identity;
 ?>
     <div class="container full">
 
@@ -21,8 +22,13 @@ use yii\helpers\ArrayHelper;
                             <article class="post col-sm-12 col-xs-12">
                                 <div class="post-meta">
                                     <div class="post-title">
-                                        <img src="<?php echo "/uploads/".$post->user->picture; ?>" class="author-image" />
-                                        <div class="author-name"><a href="<?php echo "/profile/".$post->user->id; ?>"> <?php echo $post->user->username; ?></a></div>
+                                        <img src="<?php if ($post->user->picture) {
+                                            echo "/uploads/" . $post->user->picture;
+                                        } else
+                                            echo "/img/default.jpg" ?>" class="author-image"/>
+                                        <div class="author-name"><a
+                                                    href="<?php echo "/profile/" . $post->user->id; ?>"> <?php echo $post->user->username; ?></a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="post-type-image">
@@ -50,17 +56,29 @@ use yii\helpers\ArrayHelper;
 
                                     </div>
                                     <div class="post-date">
-                                        <span><?php echo date("d-m-Y",$post->created_at); ?></span>
+                                        <span><?php echo date("d-m-Y", $post->created_at); ?></span>
                                     </div>
-<!--                                    <div class="post-report">-->
-<!--                                        <a href="#">Report post</a>-->
-<!--                                    </div>-->
+                                    <div class="post-report">
+                                        <?php if (!$post->isReported($currentUser)): ?>
+                                            <a href="#" class="btn btn-default button-complain"
+                                               data-id="<?php echo $post->id ?>">
+                                                <?php echo Yii::t('feed','Report post') ?> <i class="fa fa-cog fa-spin fa-fw icon-preloader"
+                                                                                              style="display:none"></i>
+                                            </a>
+                                        <?php else: ?>
+                                            <p><?php echo Yii::t('feed','Post has been reported') ?></p>
+                                        <?php endif; ?>
+                                        <?php if ($currentUser->getId() == $post->user_id): ?>
+                                        <a href="#" class="btn btn-default button-delete-post"
+                                           data-id="<?php echo $post->id; ?>">Delete post</a>
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
                             </article>
                             <!-- feed item -->
 
 
-                            <div class="col-sm-12 col-xs-12" >
+                            <div class="col-sm-12 col-xs-12">
                                 <h4 align="center"><?php echo Yii::t('post','Comments').': ' ?>  <?php if (!$post->countComments()) { echo 0; } else echo $post->countComments(); ?></h4>
                                 <div class="comments-post">
 
@@ -133,5 +151,11 @@ $this->registerJsFile('@web/js/comment.js', [
     'depends' =>\yii\web\JqueryAsset::className(),
 ]);
 $this->registerJsFile('@web/js/delete.js', [
+    'depends' =>\yii\web\JqueryAsset::className(),
+]);
+$this->registerJsFile('@web/js/delete-post.js', [
+    'depends' =>\yii\web\JqueryAsset::className(),
+]);
+$this->registerJsFile('@web/js/complaints.js', [
     'depends' =>\yii\web\JqueryAsset::className(),
 ]);
